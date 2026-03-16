@@ -1,0 +1,1247 @@
+{
+  "name": "fluxo de onboarding",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            },
+            {}
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "subject:\"CRIAÇÃO DE ACESSOS\"",
+          "sender": "\tConvenia <no-reply@convenia.com.br>"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        784,
+        -224
+      ],
+      "id": "b0c22cbf-5be3-4a04-9d28-684ba9bbd5b4",
+      "name": "Gmail Trigger",
+      "notesInFlow": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1sYwFViJfCbFb4qk",
+          "name": "Gmail account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "firstName": "={{ $json.dadosDoColaborador.primeiroNome }}",
+        "lastName": "={{ $json.dadosDoColaborador.sobrenome }}",
+        "password": "R@io@2025!!@",
+        "username": "={{ $json.dadosDoColaborador.emailCorporativo.split('@')[0] }}",
+        "domain": "=raiobeneficios.com",
+        "additionalFields": {
+          "changePasswordAtNextLogin": true
+        }
+      },
+      "type": "n8n-nodes-base.gSuiteAdmin",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        -416
+      ],
+      "id": "862dc62e-6f1d-4f96-beda-500dd2a7f9b9",
+      "name": "Create a user",
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Recebe o email do convenia com os dados COMPLETOS ",
+        "height": 240,
+        "width": 304,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        688,
+        -304
+      ],
+      "typeVersion": 1,
+      "id": "e84b4510-a52c-4057-b1ee-6964219b1c5d",
+      "name": "Sticky Note",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": " mas continua sendo algo para extrair só os campos necessários",
+        "height": 80
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2640,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "5c89848f-5221-4451-953c-a491eb6cf48d",
+      "name": "Sticky Note1",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Se tiver todos os dados segue para a criação",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2592,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "5fe98b56-0441-48f5-ae05-9f6df61da5bf",
+      "name": "Sticky Note2",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Se não cria um ticket no Jira para a criação manual",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2592,
+        -320
+      ],
+      "typeVersion": 1,
+      "id": "32da2f7f-64bb-4263-9e80-ebc91708ee8b",
+      "name": "Sticky Note3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Cria um user no painel adm \n",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        -320
+      ],
+      "id": "3bf875d5-85d7-4d7d-bb0b-c66c898def7e",
+      "name": "Sticky Note4",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Adiciona ao grupo geral, ao do seu departamento e se necessário, adicionar ao grupo certo da vpn",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        -704
+      ],
+      "id": "af601052-4131-439e-86bc-ffd9843e3476",
+      "name": "Sticky Note5",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Cria o documento de boas vindas (rever sobre isso) ",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2592,
+        -608
+      ],
+      "id": "22ef66e3-2655-4ae7-8709-065acda0932b",
+      "name": "Sticky Note6",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "compartilha com as pessoas que vão enviar isso \n",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2592,
+        -512
+      ],
+      "id": "b112247a-f52c-49cb-be72-f50b9308eb79",
+      "name": "Sticky Note7",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Da um ok no canal falando que esta concluido \n",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        -512
+      ],
+      "id": "ca95b09c-b4a6-41fa-af30-3aee5d326b99",
+      "name": "Sticky Note8",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Criar ticket no Jira para configurar máquina se necessário ",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        -608
+      ],
+      "id": "74a7a8d4-6057-46a5-952d-cfcf0f76aa9b",
+      "name": "Sticky Note9",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Realizar fluxo manualmente ",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2752,
+        -416
+      ],
+      "id": "e284ebdb-5069-4b29-a8dc-a01b4971aecb",
+      "name": "Sticky Note11",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Mensagem de confirmação",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2592,
+        -416
+      ],
+      "id": "0f080b01-9523-4a1a-aff7-a6b6079e62ed",
+      "name": "Sticky Note12",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "jsCode": "// Acessa os dados de entrada de forma segura (funciona para Texto ou HTML)\nconst inputData = $input.first().json;\n\nlet emailBody = '';\n\n// 1. TENTA PEGAR O TEXTO LIMPO, SE NÃO TIVER, PEGA O SNIPPET (RESUMO) OU HTML\nif (inputData.body && inputData.body.text) {\n  emailBody = inputData.body.text;\n} else if (inputData.text) {\n  emailBody = inputData.text;\n} else if (inputData.snippet) {\n  emailBody = inputData.snippet;\n} else if (inputData.html) {\n  emailBody = inputData.html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ');\n} else {\n  throw new Error(\"O e-mail parece vazio ou o formato mudou. Verifique o Input.\");\n}\n\n// --- FUNÇÃO AUXILIAR PARA \"Title Case\" ---\nfunction toTitleCase(str) {\n  if (!str) return null;\n  return str\n    .split(' ')\n    .filter(p => p.trim() !== '')\n    .map(word =>\n      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()\n    )\n    .join(' ');\n}\n\n// --- FUNÇÃO DE EXTRAÇÃO GENÉRICA ---\nfunction extrairValor(chave) {\n  const regex = new RegExp('^\\\\s*' + chave + '\\\\s*:\\\\s*(.*)$', 'mi');\n  const match = emailBody.match(regex);\n  return match ? match[1].trim() : null;\n}\n\n// --- EXTRAÇÃO DOS DADOS ---\nconst nomeCompletoRaw = extrairValor('COLABORADOR');\nconst emailCorporativo = extrairValor('E-MAIL CORPORATIVO');\nconst emailPessoal = extrairValor('E-MAIL PESSOAL');\nconst dataAdmissao =\n  extrairValor('DATA DE ADMISSÃO') ||\n  extrairValor('DATA ADMISSAO') ||\n  extrairValor('DATA ADMISSÃO');\nconst departamento = extrairValor('DEPARTAMENTO');\nconst gestor = extrairValor('GESTOR');\nconst telefone = extrairValor('TELEFONE');\nconst jornada = extrairValor('JORNADA') || \"\";\n\n// --- LÓGICA DE REGIME DE TRABALHO (SEDE POA) ---\n// Se não encontrar a palavra \"REMOTO\", assume que é presencial/híbrido\nconst ehRemoto = jornada.toUpperCase().includes(\"REMOTO\");\n\nlet primeiroNome = null;\nlet sobrenome = null;\n\n// --- TRATAMENTO DE NOME ---\nif (nomeCompletoRaw) {\n  const partesNome = nomeCompletoRaw\n    .split(' ')\n    .filter(p => p.trim() !== '');\n  if (partesNome.length > 0) {\n    primeiroNome = toTitleCase(partesNome[0]);\n    if (partesNome.length > 1) {\n      sobrenome = toTitleCase(partesNome.slice(1).join(' '));\n    } else {\n      sobrenome = '';\n    }\n  }\n}\n\n// --- GERAÇÃO DO USERNAME (LOGIN) ---\nlet usernameGoogle = null;\nif (emailCorporativo) {\n  usernameGoogle = emailCorporativo.split('@')[0].toLowerCase().trim();\n}\n\n// --- MAPEAMENTO DE DRIVES POR DEPARTAMENTO ---\nconst mapaDeDrives = {\n  COMERCIAL: 'ID_DA_PASTA_COMERCIAL',\n  RH: 'ID_DA_PASTA_RH',\n  FINANCEIRO: 'ID_DA_PASTA_FINANCEIRO',\n  TI: 'ID_DA_PASTA_TI',\n  TECH: 'ID_DA_PASTA_TI'\n};\n\n// --- MAPEAMENTO DE GRUPOS DE E-MAIL ---\nconst mapaDeGrupos = {\n  COMERCIAL: 'comercial@raiobeneficios.com',\n  RH: 'rh@raiobeneficios.com',\n  FINANCEIRO: 'financeiro@raiobeneficios.com',\n  TECH: 'tech@raiobeneficios.com',\n  TI: 'tech@raiobeneficios.com'\n};\n\n// Normaliza o texto do departamento\nconst chaveDepto = departamento ? departamento.toUpperCase().trim() : '';\n\n// 1. Define o grupo do setor (ou geral se não encontrar)\nconst emailGrupoSetor = mapaDeGrupos[chaveDepto] || 'geral@raiobeneficios.com';\n\n// 2. Monta a lista de todos os grupos que o colaborador deve entrar\nlet listaFinalGrupos = ['03hv69ve2q9hx18', emailGrupoSetor]; // Geral Raiô + Grupo do Setor\n\n// 3. Adiciona sede-poa se NÃO for remoto\nif (!ehRemoto) {\n  listaFinalGrupos.push('sede-poa@raiobeneficios.com');\n}\n\n// --- RETORNO NO FORMATO ESPERADO PELO n8n ---\nreturn [\n  {\n    json: {\n      dadosDoColaborador: {\n        nomeCompleto: toTitleCase(nomeCompletoRaw),\n        primeiroNome,\n        sobrenome,\n        emailCorporativo: emailCorporativo\n          ? emailCorporativo.toLowerCase().trim()\n          : null,\n        emailPessoal: emailPessoal ? emailPessoal.trim() : 'Nao informado',\n        usernameGoogle,\n        dataAdmissao,\n        departamento,\n        jornada,\n        ehRemoto,\n        gestor,\n        telefone,\n        idDriveDestino: mapaDeDrives[chaveDepto] || 'ID_PASTA_PADRAO',\n        emailGrupoDestino: emailGrupoSetor,\n        todosOsGrupos: listaFinalGrupos // Use esta lista para automatizar as entradas\n      },\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        -224
+      ],
+      "id": "774066e4-9904-45f6-9fcd-36f2f520a46f",
+      "name": "Code",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "addToGroup",
+        "userId": {
+          "__rl": true,
+          "value": "={{ $json.primaryEmail }}",
+          "mode": "userEmail"
+        },
+        "groupId": {
+          "__rl": true,
+          "value": "03hv69ve2q9hx18",
+          "mode": "list",
+          "cachedResultName": "Geral Raiô"
+        }
+      },
+      "type": "n8n-nodes-base.gSuiteAdmin",
+      "typeVersion": 1,
+      "position": [
+        2304,
+        -448
+      ],
+      "id": "5eea18d3-1a37-4177-94be-bcc0dc7e2e49",
+      "name": "Geral",
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "project": {
+          "__rl": true,
+          "value": "=",
+          "mode": "id"
+        },
+        "issueType": {
+          "__rl": true,
+          "value": "=",
+          "mode": "id",
+          "__regex": "^([0-9]{1,})"
+        },
+        "summary": "=",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.jira",
+      "typeVersion": 1,
+      "position": [
+        1184,
+        -64
+      ],
+      "id": "d709c8e8-2d14-4388-abd9-b8e999c686f6",
+      "name": "Configuração de máquina",
+      "credentials": {
+        "jiraSoftwareCloudApi": {
+          "id": "q1IWuTizbBkChxDa",
+          "name": "Jira SW Cloud account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "operation": "share",
+        "folderNoRootId": {
+          "__rl": true,
+          "value": "={{ $json.dadosDoColaborador.idDriveDestino }}",
+          "mode": "id"
+        },
+        "permissionsUi": {
+          "permissionsValues": {
+            "role": "organizer",
+            "type": "user",
+            "emailAddress": "={{ $json.dadosDoColaborador.emailCorporativo }}"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1552,
+        -640
+      ],
+      "id": "e9b35990-5cb1-4bb1-88f8-6315fbe3ce66",
+      "name": "Share folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "EXMJ9Ve964QDFP6z",
+          "name": "Google Drive account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "resource": "__CUSTOM_API_CALL__"
+      },
+      "type": "n8n-nodes-base.gSuiteAdmin",
+      "typeVersion": 1,
+      "position": [
+        1968,
+        -336
+      ],
+      "id": "746eec39-efbf-4cf1-bfe3-fe7cb603aa94",
+      "name": "Google Workspace Admin",
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://admin.googleapis.com/admin/directory/v1/groups/{{ $json.primaryEmail.emailGrupoDestino }}/members",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gSuiteAdminOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"email\": \"{{ $json.dadosDoColaborador.emailCorporativo }}\",\n  \"role\": \"MEMBER\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2128,
+        -336
+      ],
+      "id": "ae011360-5ec5-419d-80f9-35c5ec30441e",
+      "name": "HTTP Request",
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "Compartilha os drives do departamento\n",
+        "height": 224,
+        "width": 416,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1408,
+        -704
+      ],
+      "typeVersion": 1,
+      "id": "c6785947-f615-4824-80d7-732b6ec23123",
+      "name": "Sticky Note13",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "adiciona nos grupos/vpn de cada departamento ",
+        "height": 352,
+        "width": 640,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1904,
+        -464
+      ],
+      "typeVersion": 1,
+      "id": "dc79fa7f-3210-4a01-9327-d42aa0766e8e",
+      "name": "Sticky Note14",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "16Q4gdvBvbpE6AzBjEzOdx_dWfy4vJPoztQMTNW2_Lxc",
+          "mode": "id"
+        },
+        "name": "={{ $json.name.givenName }}{{ $json.name.familyName }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1488,
+        16
+      ],
+      "id": "7da4c395-5812-44db-a0ee-dfe0a3672374",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "EXMJ9Ve964QDFP6z",
+          "name": "Google Drive account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $node[\"Copy file\"].json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{NOME}}",
+              "replaceText": "={{ $('Create a user').item.json.name.givenName }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{EMAIL}}",
+              "replaceText": "={{ $('Create a user').item.json.primaryEmail }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        16
+      ],
+      "id": "4ef57662-4523-4bc0-8d73-e1b27f788718",
+      "name": "Update a document",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "BRv9VMdA1NSIArnq",
+          "name": "Google Docs account"
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "cards de boas vindas \n",
+        "height": 288,
+        "width": 432
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1424,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "94e47ce7-cac2-4fa3-9221-a5dd51f0e8c2",
+      "name": "Sticky Note10",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "D08DB5FSLAK",
+          "mode": "id"
+        },
+        "text": "=Usuário criado com sucesso",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1904,
+        -640
+      ],
+      "id": "c48788d2-e212-472f-82a0-01f32912ceb8",
+      "name": "concluido",
+      "webhookId": "362aa426-bca3-484b-a8cb-72a215d01ee2",
+      "credentials": {
+        "slackApi": {
+          "id": "R2Kc8jZbzr4RLPPO",
+          "name": "Tokens bot "
+        }
+      },
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "batchSize": 5,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1648,
+        -352
+      ],
+      "id": "7a8b2e35-0820-4478-b1e7-f290d0599f6f",
+      "name": "Loop Over Items",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "content": "rever \n",
+        "height": 80,
+        "width": 150,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1712,
+        -720
+      ],
+      "typeVersion": 1,
+      "id": "818e50a5-7d1e-4596-98ef-af2f410fa520",
+      "name": "Sticky Note15",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "subject:\"CRIAÇÃO DE ACESSOS\"",
+          "sender": "Convenia <no-reply@convenia.com.br>"
+        },
+        "options": {}
+      },
+      "id": "acb52305-7dcf-4e39-821f-27aec057d1a3",
+      "name": "Gmail — Convenia",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -240,
+        736
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "1sYwFViJfCbFb4qk",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst raw = $input.first().json;\n\nlet emailBody = '';\nif (raw.body && raw.body.text)       emailBody = raw.body.text;\nelse if (raw.text)                   emailBody = raw.text;\nelse if (raw.snippet)                emailBody = raw.snippet;\nelse if (raw.body && raw.body.html)  emailBody = raw.body.html.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ');\nelse throw new Error('Corpo do e-mail não encontrado.');\n\nfunction extrair(chave) {\n  const regex = new RegExp('^\\\\s*' + chave + '\\\\s*:\\\\s*(.*)$', 'mi');\n  const match = emailBody.match(regex);\n  return match ? match[1].trim() : null;\n}\n\nfunction toTitleCase(str) {\n  if (!str) return null;\n  return str.split(' ').filter(p => p.trim())\n    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())\n    .join(' ');\n}\n\n// Campos exatos do e-mail Convenia\nconst nomeCompletoRaw  = extrair('COLABORADOR');\nconst dataAdmissao     = extrair('DATA ADMISS[ÃA]O') || extrair('DATA ADMISSAO');\nconst emailPessoal     = extrair('E-MAIL PESSOAL') || 'Nao informado';\nconst emailCorporativo = extrair('E-MAIL CORPORATIVO');\nconst departamento     = extrair('DEPARTAMENTO');\nconst gestorRaw        = extrair('GESTOR');\nconst telefone         = extrair('TELEFONE');\nconst jornada          = extrair('JORNADA') || '';\nconst equipamento      = extrair('Necessidade de equipamento') || 'Nao informado';\n\n// Nome\nconst partes       = nomeCompletoRaw ? nomeCompletoRaw.split(' ').filter(p => p.trim()) : [];\nconst primeiroNome = partes.length > 0 ? toTitleCase(partes[0]) : null;\nconst sobrenome    = partes.length > 1 ? toTitleCase(partes.slice(1).join(' ')) : '';\n\nconst usernameGoogle = emailCorporativo ? emailCorporativo.split('@')[0].toLowerCase().trim() : null;\nconst ehPresencial   = jornada.toUpperCase().includes('PRESENCIAL');\nconst chaveDepto     = departamento ? departamento.toUpperCase().trim() : '';\n\n// --- MAPA DE GESTORES ---\n// Cobre primeiro nome, nome completo e variações com/sem acento\nconst mapaGestores = {\n  // Gabriel Cunha\n  'GABRIEL':              'gabriel.cunha@raiobeneficios.com',\n  'GABRIEL CUNHA':        'gabriel.cunha@raiobeneficios.com',\n  // Ricardo Reis\n  'RICARDO':              'ricardo.reis@raiobeneficios.com',\n  'RICARDO REIS':         'ricardo.reis@raiobeneficios.com',\n  // Amanda Pereira (Cabreira)\n  'AMANDA':               'amanda.pereira@raiobeneficios.com',\n  'AMANDA PEREIRA':       'amanda.pereira@raiobeneficios.com',\n  'AMANDA CABREIRA':      'amanda.pereira@raiobeneficios.com',\n  // Lucca\n  'LUCCA':                'lucca@raiobeneficios.com',\n  // Pietro\n  'PIETRO':               'pietro@raiobeneficios.com',\n  // Gustavo Lima\n  'GUSTAVO':              'gustavo.lima@raiobeneficios.com',\n  'GUSTAVO LIMA':         'gustavo.lima@raiobeneficios.com',\n  // Pedro Petersen\n  'PEDRO':                'pedro.petersen@raiobeneficios.com',\n  'PEDRO PETERSEN':       'pedro.petersen@raiobeneficios.com',\n  // Veronica Abdala\n  'VERONICA':             'veronica.abdala@raiobeneficios.com',\n  'VERÔNICA':             'veronica.abdala@raiobeneficios.com',\n  'VERONICA ABDALA':      'veronica.abdala@raiobeneficios.com',\n  'VERÔNICA ABDALA':      'veronica.abdala@raiobeneficios.com',\n  // Mateus Jarros\n  'MATEUS':               'mateus.jarros@raiobeneficios.com',\n  'MATEUS JARROS':        'mateus.jarros@raiobeneficios.com',\n  // Christiano Almeida\n  'CHRISTIANO':           'christiano.almeida@raiobeneficios.com',\n  'CHRISTIANO ALMEIDA':   'christiano.almeida@raiobeneficios.com'\n};\n\nconst gestorChave  = gestorRaw ? gestorRaw.toUpperCase().trim() : '';\nconst gestorEmail  = mapaGestores[gestorChave] || gestorRaw || 'nao-identificado';\n\n// Grupos\nconst mapaGrupos = {\n  COMERCIAL:  'comercial@raiobeneficios.com',\n  RH:         'rh@raiobeneficios.com',\n  FINANCEIRO: 'financeiro@raiobeneficios.com',\n  TECH:       'tech@raiobeneficios.com',\n  TI:         'tech@raiobeneficios.com',\n  OPERACOES:  'operacoes@raiobeneficios.com',\n  MARKETING:  'marketing@raiobeneficios.com'\n};\n\nconst todosOsGrupos = ['todos@raiobeneficios.com'];\nif (ehPresencial) todosOsGrupos.push('sede-poa@raiobeneficios.com');\nconst grupoDepto = mapaGrupos[chaveDepto];\nif (grupoDepto) todosOsGrupos.push(grupoDepto);\n\nconst mapaDrives = {\n  COMERCIAL:  'PLACEHOLDER_DRIVE_COMERCIAL',\n  RH:         'PLACEHOLDER_DRIVE_RH',\n  FINANCEIRO: 'PLACEHOLDER_DRIVE_FINANCEIRO',\n  TECH:       'PLACEHOLDER_DRIVE_TECH',\n  TI:         'PLACEHOLDER_DRIVE_TECH'\n};\n\nreturn [{\n  json: {\n    dadosDoColaborador: {\n      nomeCompleto:     toTitleCase(nomeCompletoRaw),\n      primeiroNome,\n      sobrenome,\n      emailCorporativo: emailCorporativo ? emailCorporativo.toLowerCase().trim() : null,\n      emailPessoal,\n      usernameGoogle,\n      dataAdmissao,\n      departamento,\n      chaveDepto,\n      jornada,\n      ehPresencial,\n      gestorRaw,\n      gestorEmail,\n      telefone,\n      equipamento,\n      idDriveDestino: mapaDrives[chaveDepto] || 'PLACEHOLDER_DRIVE_GERAL',\n      todosOsGrupos,\n      ehComercial: chaveDepto === 'COMERCIAL'\n    }\n  }\n}];\n"
+      },
+      "id": "5bb46565-a834-4257-816d-4d43f9995580",
+      "name": "Parsear Dados do Convenia",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        16,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Gera senha segura: letra maiúscula + minúsculas + números + símbolo\n// Formato: Rb + 8 chars aleatórios + !9  →  ex: RbxK9mTq2a!9\nconst chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';\nlet senha = 'Rb';\nfor (let i = 0; i < 8; i++) {\n  senha += chars.charAt(Math.floor(Math.random() * chars.length));\n}\nsenha += '!9';\n\nconst dados = $('Parsear Dados do Convenia').item.json.dadosDoColaborador;\n\nreturn [{\n  json: {\n    ...dados,\n    senhaTemporaria: senha\n  }\n}];"
+      },
+      "id": "97e43981-b8e3-487d-a48e-4f802be29aef",
+      "name": "Gerar Senha Temporária",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        256,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "firstName": "={{ $json.primeiroNome }}",
+        "lastName": "={{ $json.sobrenome }}",
+        "password": "={{ $json.senhaTemporaria }}",
+        "username": "={{ $json.usernameGoogle }}",
+        "domain": "raiobeneficios.com",
+        "additionalFields": {
+          "changePasswordAtNextLogin": false
+        }
+      },
+      "id": "a2c08d4b-f1f3-48c6-ba96-0c624e4dcf97",
+      "name": "Criar Usuário GWS",
+      "type": "n8n-nodes-base.gSuiteAdmin",
+      "typeVersion": 1,
+      "position": [
+        496,
+        736
+      ],
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://admin.googleapis.com/admin/directory/v1/users/{{ $('Gerar Senha Temporária').item.json.emailCorporativo }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "gSuiteAdminOAuth2Api",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"relations\": [\n    {\n      \"value\": \"{{ $('Gerar Senha Temporária').item.json.gestorEmail }}\",\n      \"type\": \"manager\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "id": "376ad83e-ed27-4deb-9fea-661872e438c2",
+      "name": "Definir Manager no GWS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        736,
+        736
+      ],
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const dados = $('Gerar Senha Temporária').item.json;\nconst grupos = dados.todosOsGrupos;\nconst email  = dados.emailCorporativo;\n\nreturn grupos.map(grupo => ({\n  json: { grupoEmail: grupo, membroEmail: email }\n}));"
+      },
+      "id": "1fc49a08-de57-4c21-925d-6c4d6aad5925",
+      "name": "Preparar Lista de Grupos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        976,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "addToGroup",
+        "userId": {
+          "__rl": true,
+          "value": "={{ $json.membroEmail }}",
+          "mode": "userEmail"
+        },
+        "groupId": {
+          "__rl": true,
+          "value": "={{ $json.grupoEmail }}",
+          "mode": "groupEmail"
+        }
+      },
+      "id": "f56f8c32-0e3c-437a-8018-c9e410949329",
+      "name": "Adicionar ao Grupo",
+      "type": "n8n-nodes-base.gSuiteAdmin",
+      "typeVersion": 1,
+      "position": [
+        1216,
+        736
+      ],
+      "credentials": {
+        "gSuiteAdminOAuth2Api": {
+          "id": "cyjYpE0w4cxeFq7g",
+          "name": "Google Workspace Admin"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "id": "28bd7719-b19e-4ccd-82c5-c35a3b516008",
+      "name": "Consolidar após Grupos",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1456,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1lCtvWeVdhY-ilX5JMDKv7FM70XcnazaU40UX_gP24zA",
+          "mode": "id"
+        },
+        "name": "={{ $('Gerar Senha Temporária').item.json.nomeCompleto }} — Boas-vindas",
+        "options": {}
+      },
+      "id": "ca3fa595-ae40-43f8-9e95-5c4f1fa27f72",
+      "name": "Copiar Modelo Boas-Vindas",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1696,
+        736
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "EXMJ9Ve964QDFP6z",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{NOME}}",
+              "replaceText": "={{ $('Gerar Senha Temporária').item.json.primeiroNome }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{EMAIL}}",
+              "replaceText": "={{ $('Gerar Senha Temporária').item.json.emailCorporativo }}"
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{SENHA}}",
+              "replaceText": "={{ $('Gerar Senha Temporária').item.json.senhaTemporaria }}"
+            }
+          ]
+        }
+      },
+      "id": "4e3226fa-2286-4b3b-a762-f9f8fd422f6b",
+      "name": "Preencher Card Boas-Vindas",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1936,
+        736
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "BRv9VMdA1NSIArnq",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $('Gerar Senha Temporária').item.json.ehComercial }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e7f38c11-0e66-487f-b1f7-244fc32ca8a8",
+      "name": "É Comercial?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2176,
+        736
+      ]
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "create"
+      },
+      "id": "ee3b9c19-e796-4da2-9fc8-3c0e2d0f6cbd",
+      "name": "Criar Contato HubSpot",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 2.1,
+      "position": [
+        2416,
+        624
+      ]
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "D08DB5FSLAK",
+          "mode": "id"
+        },
+        "text": "=:white_check_mark: *Onboarding concluído!*\n\n*Nome:* {{ $('Gerar Senha Temporária').item.json.nomeCompleto }}\n*E-mail:* {{ $('Gerar Senha Temporária').item.json.emailCorporativo }}\n*Departamento:* {{ $('Gerar Senha Temporária').item.json.departamento }}\n*Gestor:* {{ $('Gerar Senha Temporária').item.json.gestorEmail }}\n*Grupos:* {{ $('Gerar Senha Temporária').item.json.todosOsGrupos.join(', ') }}\n*Card de boas-vindas:* criado com senha preenchida :page_facing_up:",
+        "otherOptions": {}
+      },
+      "id": "1d0b96e1-3894-4914-a45a-4ee154fb46e5",
+      "name": "Slack — Onboarding Concluído",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        2656,
+        736
+      ],
+      "webhookId": "c2974aec-7e0b-4b25-af25-c7af1bc1181b",
+      "credentials": {
+        "slackApi": {
+          "id": "R2Kc8jZbzr4RLPPO",
+          "name": "Tokens bot "
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "🟡 TRIGGER\nGmail polling — assunto: CRIAÇÃO DE ACESSOS\nRemetente: no-reply@convenia.com.br",
+        "height": 120,
+        "color": 5
+      },
+      "id": "fc085161-ffd8-4868-8874-dbdb74fbb577",
+      "name": "Nota — Trigger",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        576
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🔵 PARSE\nExtrai campos do texto do e-mail.\nCampos: COLABORADOR, DATA ADMISSÃO,\nE-MAIL PESSOAL, E-MAIL CORPORATIVO,\nDEPARTAMENTO, GESTOR, TELEFONE, JORNADA.\nPRESENCIAL → adiciona sede-poa@",
+        "width": 260,
+        "color": 3
+      },
+      "id": "a90ddd99-af70-4acd-a420-87d8abccf608",
+      "name": "Nota — Parse",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -32,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🟢 GOOGLE WORKSPACE\n1. Cria usuário (senha aleatória + troca no 1º acesso)\n2. Define manager via Directory API (PUT)\n3. Adiciona a todos os grupos em paralelo\n   → todos@ sempre\n   → sede-poa@ se PRESENCIAL\n   → grupo do depto se mapeado",
+        "height": 180,
+        "width": 780,
+        "color": 6
+      },
+      "id": "b299ecb3-eb61-428a-972e-1e2761f72c4c",
+      "name": "Nota — GWS",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        288,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🟣 CARD BOAS-VINDAS\nCopia o modelo (Google Docs) para a pasta\nde boas-vindas e substitui:\n{{NOME}}, {{EMAIL}}, {{SENHA}}\n\nModelo ID: 1lCtvWeVdhY-ilX5JMDKv7FM70XcnazaU40UX_gP24zA\nPasta: 1sEgVnqikEax4I2sLPGYEOYr0nC9vy8KZ\n\n⚠️ Sempre executado — para TODOS os colaboradores.",
+        "height": 180,
+        "width": 460,
+        "color": 7
+      },
+      "id": "96fff767-5968-4c00-aaf9-c4e200039e2b",
+      "name": "Nota — Doc",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "content": "🟠 HUBSPOT\nSó executa se departamento == COMERCIAL.\nCria contato com nome + e-mail.\n\n⚠️ Preencher credencial HubSpot antes de ativar.",
+        "height": 140,
+        "width": 280,
+        "color": 4
+      },
+      "id": "46779e96-b42a-444d-847e-d3103a843c1b",
+      "name": "Nota — HubSpot",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        512
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a user": {
+      "main": [
+        [
+          {
+            "node": "Geral",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Share folder",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Create a user",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Configuração de máquina",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Geral": {
+      "main": [
+        []
+      ]
+    },
+    "Configuração de máquina": {
+      "main": [
+        []
+      ]
+    },
+    "Google Workspace Admin": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Update a document",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Share folder": {
+      "main": [
+        [
+          {
+            "node": "concluido",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "concluido": {
+      "main": [
+        []
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [
+          {
+            "node": "Geral",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Google Workspace Admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail — Convenia": {
+      "main": [
+        [
+          {
+            "node": "Parsear Dados do Convenia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsear Dados do Convenia": {
+      "main": [
+        [
+          {
+            "node": "Gerar Senha Temporária",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Usuário GWS": {
+      "main": [
+        [
+          {
+            "node": "Definir Manager no GWS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Definir Manager no GWS": {
+      "main": [
+        [
+          {
+            "node": "Preparar Lista de Grupos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar Lista de Grupos": {
+      "main": [
+        [
+          {
+            "node": "Adicionar ao Grupo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Adicionar ao Grupo": {
+      "main": [
+        [
+          {
+            "node": "Consolidar após Grupos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Consolidar após Grupos": {
+      "main": [
+        [
+          {
+            "node": "Copiar Modelo Boas-Vindas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copiar Modelo Boas-Vindas": {
+      "main": [
+        [
+          {
+            "node": "Preencher Card Boas-Vindas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preencher Card Boas-Vindas": {
+      "main": [
+        [
+          {
+            "node": "É Comercial?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "É Comercial?": {
+      "main": [
+        [
+          {
+            "node": "Criar Contato HubSpot",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Slack — Onboarding Concluído",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Criar Contato HubSpot": {
+      "main": [
+        [
+          {
+            "node": "Slack — Onboarding Concluído",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar Senha Temporária": {
+      "main": [
+        [
+          {
+            "node": "Criar Usuário GWS",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "bc5ee34a-7668-46d1-891f-3f385ec87635",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7afebb4384d90acafdcad4a49097c2b13932dcd4447bec8add3798a9c4e25d3e"
+  },
+  "id": "6EUHVOT4c2rpOL4B",
+  "tags": []
+}
