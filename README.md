@@ -1,212 +1,246 @@
-⚡ n8n Onboarding Automation
-Fluxo automático de onboarding de colaboradores
-Stack: n8n  ·  Google Workspace  ·  Slack  ·  HubSpot  ·  Convenia
+# ⚡ Raio Benefícios — Onboarding Automation
 
-📋 O que é
-Automação completa do processo de onboarding de novos colaboradores. O fluxo é disparado automaticamente pelo e-mail "CRIAÇÃO DE ACESSOS" enviado pelo Convenia (sistema de RH) e executa toda a jornada de provisionamento sem intervenção manual.
+> Automação completa de onboarding de colaboradores utilizando n8n, Google Workspace, Slack, HubSpot e Convenia.
 
-Uma vez recebido o e-mail, o fluxo:
-	•	Cria o usuário no Google Workspace com senha aleatória segura
-	•	Define o gestor/manager direto no Google Admin
-	•	Adiciona o colaborador aos grupos corretos (todos@, sede-poa@ se presencial, grupo do departamento)
-	•	Gera o card de boas-vindas (cópia do modelo Google Docs) com nome, e-mail e senha preenchidos
-	•	Cria o contato no HubSpot se o colaborador for do Comercial
-	•	Notifica o canal no Slack com um resumo completo
+---
 
-🗂️ Ponto de Partida
-O projeto partiu de um fluxo v1/v2 parcialmente funcional. Apenas a criação do usuário no Google Workspace estava operando. Os demais componentes apresentavam os seguintes problemas:
+## 📋 Sumário
 
-Componente
-Problema
-Loop de grupos
-Iterava sobre o objeto do usuário criado (único item), nunca sobre a lista de grupos — nunca executava
-URL do grupo
-Bug: $json.primaryEmail.emailGrupoDestino — mistura de dois campos distintos
-Card boas-vindas
-Nó Google Docs tentava editar um arquivo Google Slides — tipos incompatíveis
-Senha
-Hardcoded diretamente no JSON do fluxo (R@io@2025!!@)
-Campo password
-Declarado em additionalFields — ignorado pelo nó gSuiteAdmin (precisa ser campo raiz)
-Manager/Gestor
-Não existia no fluxo
-HubSpot
-Não existia no fluxo
-Card para todos
-Card só era gerado em alguns caminhos do fluxo
-Parser de campos
-Campos genéricos com fallbacks imprecisos, sem mapeamento dos campos reais do Convenia
+- [Visão Geral](#visão-geral)
+- [Ponto de Partida](#ponto-de-partida)
+- [O Que Foi Construído](#o-que-foi-construído)
+- [Arquitetura do Fluxo](#arquitetura-do-fluxo)
+- [Arquivos do Repositório](#arquivos-do-repositório)
+- [Pré-requisitos](#pré-requisitos)
+- [Configuração](#configuração)
+- [Como Usar](#como-usar)
 
-🔨 Arquitetura do Fluxo v3
-O fluxo v3 é linear, sem gates de aprovação humana. Chega o e-mail do Convenia → tudo é provisionado automaticamente.
+---
 
+## Visão Geral
 
-Nó
-O que faz
-📧
-Gmail Trigger
-Polling a cada minuto — detecta e-mail do Convenia com assunto "CRIAÇÃO DE ACESSOS"
-⚙️
-Parsear Dados
-Extrai campos do corpo do e-mail por regex linha a linha. Monta lista de grupos e resolve o nome do gestor para e-mail corporativo.
-🔑
-Gerar Senha
-Gera senha segura aleatória (ex: RbxK9mTq2a!9) e salva no item para ser usada na criação e no card.
-👤
-Criar Usuário GWS
-Cria o usuário no Google Workspace com firstName, lastName, username (nome.sobrenome), domain e senha gerada.
-👔
-Definir Manager
-Atualiza o campo manager no Google Admin via Directory API (PUT /users/{email}) com o e-mail resolvido do gestor.
-📋
-Preparar Grupos
-Expande o array todosOsGrupos em itens individuais para que o próximo nó processe cada grupo.
-➕
-Adicionar ao Grupo
-Adiciona o colaborador a cada grupo via nó nativo GSuite Admin (addToGroup).
-🔗
-Consolidar
-Agrega os múltiplos itens de volta para um único item e continua o fluxo.
-📄
-Copiar Modelo Doc
-Copia o arquivo Google Docs modelo para a pasta de boas-vindas com nome "<Nome Completo> — Boas-vindas".
-✏️
-Preencher Card
-Substitui {{NOME}}, {{EMAIL}} e {{SENHA}} no documento copiado com os dados reais do colaborador.
-🏢
-É Comercial?
-IF: verifica se chaveDepto == COMERCIAL. Sim → HubSpot. Não → Slack diretamente. Card sempre é gerado antes deste ponto.
-🟠
-Criar no HubSpot
-Cria contato no HubSpot com nome e e-mail corporativo. Executado somente para o departamento Comercial.
-✅
-Slack — Conclusão
-Notifica o canal com resumo: nome, e-mail, departamento, gestor resolvido, grupos adicionados e confirmação do card.
+Esta automação gerencia todo o processo de provisionamento de um novo colaborador a partir do e-mail enviado pelo Convenia (sistema de RH), executando todas as ações automaticamente sem intervenção manual.
 
-Lógica de Grupos
-Calculados dinamicamente no nó de parse com base nos dados do colaborador:
-	•	todos@raiobeneficios.com — sempre, para todos os colaboradores
-	•	sede-poa@raiobeneficios.com — somente se a jornada contiver "PRESENCIAL"
-	•	Grupo do departamento (comercial@, rh@, tech@...) — se o departamento estiver no mapeamento
+**Stack utilizada:**
+- **Orquestração:** n8n (self-hosted)
+- **Identidade:** Google Workspace Admin API
+- **Comunicação:** Slack (notificações)
+- **CRM:** HubSpot
+- **Formulários/Card:** Google Drive + Google Docs
+- **RH:** Convenia (trigger via e-mail)
 
-Resolução de Gestores
-O campo GESTOR no e-mail do Convenia pode chegar como primeiro nome ou nome completo. O nó de parse converte para e-mail corporativo via mapa interno com todas as variações cobertas (com e sem acento, com e sem sobrenome). Se vier um nome fora do mapa, o fluxo não quebra — usa o valor bruto e informa no Slack.
+---
 
-📧 Formato do E-mail Convenia
-O parser extrai os seguintes campos do corpo do e-mail por regex (uma chave por linha):
+## Ponto de Partida
 
-Campo no e-mail
-Variável gerada
-Observação
-COLABORADOR
-nomeCompleto / primeiroNome / sobrenome
-Dividido em partes automaticamente
-E-MAIL CORPORATIVO
-emailCorporativo / usernameGoogle
-Username = parte antes do @
-E-MAIL PESSOAL
-emailPessoal
-—
-DATA ADMISSÃO
-dataAdmissao
-Aceita com ou sem acento
-DEPARTAMENTO
-departamento / chaveDepto
-chaveDepto = uppercase para comparação
-GESTOR
-gestorRaw / gestorEmail
-gestorEmail = e-mail resolvido via mapa
-TELEFONE
-telefone
-—
-JORNADA
-jornada / ehPresencial
-ehPresencial = true se contiver PRESENCIAL
-Necessidade de equipamento
-equipamento
-—
+O fluxo original (`Fluxo_de_Onboarding_2.json`) já possuía uma base parcial com:
 
-📄 Card de Boas-Vindas
-O modelo Google Docs deve conter os seguintes placeholders (case-insensitive, chaves duplas obrigatórias):
+✅ Trigger via Gmail polling (assunto "CRIAÇÃO DE ACESSOS")  
+✅ Nó Code com parser do corpo do e-mail  
+✅ Criação do usuário no Google Workspace  
 
-{{NOME}}   →  primeiro nome do colaborador
-{{EMAIL}}  →  e-mail corporativo completo
-{{SENHA}}  →  senha temporária gerada pelo fluxo
+**Problemas identificados no fluxo original:**
 
-O arquivo copiado é salvo na pasta destino com o nome:
-<Nome Completo> — Boas-vindas
+| Problema | Impacto |
+|---|---|
+| Loop de grupos iterava sobre o objeto do usuário (item único), não sobre os grupos | Nenhum grupo era adicionado |
+| URL do HTTP Request com bug: `$json.primaryEmail.emailGrupoDestino` | Chamada sempre falhava |
+| Nó Google Docs tentava editar um arquivo Google Slides | Tipos incompatíveis, card nunca era gerado |
+| Senha hardcoded `R@io@2025!!@` no JSON do fluxo | Risco de segurança |
+| Campo `password` declarado em `additionalFields` | Ignorado pelo nó gSuiteAdmin — usuário criado sem senha |
+| Sem definição do campo manager/gestor no Google Admin | Gestor não era registrado |
+| Sem integração com HubSpot | Colaboradores do Comercial não eram criados no CRM |
+| Card de boas-vindas gerado só em alguns caminhos | Colaboradores de outros departamentos não recebiam o card |
+| Campos do parser genéricos com fallbacks imprecisos | Risco de extração incorreta dos dados |
 
-IDs configurados:
-	•	Modelo: 1lCtvWeVdhY-ilX5JMDKv7FM70XcnazaU40UX_gP24zA
-	•	Pasta destino: 1sEgVnqikEax4I2sLPGYEOYr0nC9vy8KZ
+---
 
-⚙️ Configuração antes de ativar
-Os seguintes placeholders precisam ser preenchidos no fluxo antes de ativar:
+## O Que Foi Construído
 
-Placeholder
-Nó
-O que colocar
-PLACEHOLDER_DRIVE_COMERCIAL
-Parsear Dados
-ID da pasta Drive do depto Comercial
-PLACEHOLDER_DRIVE_RH
-Parsear Dados
-ID da pasta Drive do depto RH
-PLACEHOLDER_DRIVE_FINANCEIRO
-Parsear Dados
-ID da pasta Drive do depto Financeiro
-PLACEHOLDER_DRIVE_TECH
-Parsear Dados
-ID da pasta Drive do depto Tech/TI
-PLACEHOLDER_DRIVE_GERAL
-Parsear Dados
-ID da pasta Drive padrão (fallback)
-PLACEHOLDER_HUBSPOT_CRED
-Criar Contato HubSpot
-ID da credencial HubSpot OAuth2 no n8n
+### v3 — Correções e novas funcionalidades
 
-Credenciais já vinculadas no n8n:
-	•	Google Workspace Admin — cyjYpE0w4cxeFq7g
-	•	Google Drive — EXMJ9Ve964QDFP6z
-	•	Google Docs — BRv9VMdA1NSIArnq
-	•	Gmail OAuth2 — 1sYwFViJfCbFb4qk
-	•	Slack Bot — R2Kc8jZbzr4RLPPO
+#### 🔧 Correções técnicas
 
-🚀 Como importar e ativar
-	•	Acesse o n8n em https://n8n-tech.raiobeneficios.com
-	•	Menu lateral → Workflows → Import from file
-	•	Selecione o arquivo Fluxo_Onboarding_v3.json
-	•	Preencha os PLACEHOLDERs listados acima no nó "Parsear Dados do Convenia"
-	•	Vincule a credencial HubSpot no nó "Criar Contato HubSpot"
-	•	Verifique os placeholders {{NOME}}, {{EMAIL}}, {{SENHA}} no arquivo modelo Google Docs
-	•	Ative o fluxo com o toggle no canto superior direito
+| Problema | Correção |
+|---|---|
+| Loop de grupos quebrado | Code expande o array `todosOsGrupos` em itens individuais; nó nativo GSuite Admin processa cada um |
+| URL com bug no HTTP Request | Substituído por nó nativo `addToGroup` com `mode: groupEmail` |
+| Card usando nó errado | Google Drive copia o modelo; Google Docs substitui os placeholders |
+| Senha hardcoded | Gerada aleatoriamente em nó dedicado e salva no item para reuso |
+| `password` em `additionalFields` | Movido para campo raiz dos parâmetros do nó gSuiteAdmin |
 
-Dica: rode um teste manual enviando um e-mail com o assunto "CRIAÇÃO DE ACESSOS" para o Gmail vinculado e observe a execução no painel do n8n.
+#### ✨ Novas funcionalidades
 
-📁 Arquivos do repositório
-Arquivo
-Descrição
-Fluxo_Onboarding_v3.json
-Fluxo n8n pronto para importar
-README.md / README.docx
-Esta documentação
+**Geração de senha aleatória**  
+Um nó dedicado gera a senha antes da criação do usuário (ex: `RbxK9mTq2a!9`) e a mantém no item para ser usada na criação do usuário e preenchida automaticamente no card de boas-vindas.
 
-🛠️ Stack
-Ferramenta
-Papel no fluxo
-n8n (self-hosted)
-Motor de automação
-Google Workspace Admin API
-Criação de usuário, grupos, manager
-Google Drive API
-Cópia do modelo de boas-vindas
-Google Docs API
-Substituição de placeholders no card
-Gmail
-Trigger do fluxo via polling
-Slack
-Notificação de conclusão
-HubSpot
-Criação de contato (Comercial)
-Convenia
-Sistema de RH — origem do e-mail de criação
+**Definição de Manager no Google Admin**  
+O gestor informado pelo Convenia é resolvido para e-mail corporativo via mapa interno e registrado via `PUT /admin/directory/v1/users/{email}` com o campo `relations.type: manager`.
+
+**Resolução automática de gestores**  
+O campo GESTOR do e-mail pode chegar como primeiro nome ou nome completo. O parser resolve automaticamente para o e-mail correto cobrindo todas as variações (com/sem acento, com/sem sobrenome).
+
+**Grupos dinâmicos por departamento e jornada**  
+Os grupos são calculados automaticamente:
+- `todos@raiobeneficios.com` — sempre
+- `sede-poa@raiobeneficios.com` — somente se a jornada contiver "PRESENCIAL"
+- Grupo do departamento (`comercial@`, `rh@`, `tech@`...) — se o departamento estiver mapeado
+
+**Card de boas-vindas para todos**  
+O modelo Google Docs é copiado para a pasta destino e os placeholders `{{NOME}}`, `{{EMAIL}}` e `{{SENHA}}` são substituídos com os dados reais — para todos os colaboradores, independente do departamento.
+
+**Integração com HubSpot**  
+Colaboradores do departamento Comercial são criados automaticamente como contatos no HubSpot.
+
+**Notificação de conclusão no Slack**  
+Mensagem final com resumo completo: nome, e-mail, departamento, gestor resolvido, grupos adicionados e confirmação do card gerado.
+
+---
+
+## Arquitetura do Fluxo
+```
+E-mail Convenia "CRIAÇÃO DE ACESSOS"
+         │
+         ▼
+  Gmail Trigger (polling 1 min)
+         │
+         ▼
+  Parsear Dados do Convenia
+  (extrai campos, monta grupos, resolve gestor)
+         │
+         ▼
+  Gerar Senha Temporária
+  (salva senhaTemporaria no item)
+         │
+         ▼
+  Criar Usuário GWS
+  (firstName, lastName, username, domain, password)
+         │
+         ▼
+  Definir Manager no GWS
+  (PUT Directory API com gestorEmail)
+         │
+         ▼
+  Preparar Lista de Grupos
+  (expande array em itens individuais)
+         │
+         ▼
+  Adicionar ao Grupo (por item)
+  todos@ + sede-poa@ (se presencial) + grupo do depto
+         │
+         ▼
+  Consolidar após Grupos
+         │
+         ▼
+  Copiar Modelo Boas-Vindas (Google Drive)
+         │
+         ▼
+  Preencher Card (Google Docs)
+  {{NOME}} {{EMAIL}} {{SENHA}}
+         │
+         ▼
+  É Comercial?
+  ┌───────┴───────┐
+ sim             não
+  │               │
+  ▼               │
+Criar Contato     │
+HubSpot           │
+  │               │
+  └───────┬───────┘
+          ▼
+  Slack — Onboarding Concluído
+```
+
+---
+
+## Arquivos do Repositório
+
+| Arquivo | Descrição |
+|---|---|
+| `Fluxo_Onboarding_v3.json` | Workflow n8n completo — importar diretamente |
+
+---
+
+## Pré-requisitos
+
+### Credenciais n8n necessárias
+
+| Credencial | Tipo | Usado em |
+|---|---|---|
+| Google Workspace Admin | gSuiteAdminOAuth2Api | Criar usuário, adicionar a grupos, definir manager |
+| Google Drive | googleDriveOAuth2Api | Copiar modelo de boas-vindas |
+| Google Docs | googleDocsOAuth2Api | Substituir placeholders no card |
+| Gmail | gmailOAuth2 | Trigger do fluxo |
+| Slack Bot | slackApi | Notificação de conclusão |
+| HubSpot | hubspotOAuth2Api | Criar contato (Comercial) |
+
+### Placeholders a preencher no fluxo
+
+| Placeholder | Nó | O que colocar |
+|---|---|---|
+| `PLACEHOLDER_DRIVE_COMERCIAL` | Parsear Dados | ID da pasta Drive do depto Comercial |
+| `PLACEHOLDER_DRIVE_RH` | Parsear Dados | ID da pasta Drive do depto RH |
+| `PLACEHOLDER_DRIVE_FINANCEIRO` | Parsear Dados | ID da pasta Drive do depto Financeiro |
+| `PLACEHOLDER_DRIVE_TECH` | Parsear Dados | ID da pasta Drive do depto Tech/TI |
+| `PLACEHOLDER_DRIVE_GERAL` | Parsear Dados | ID da pasta Drive padrão (fallback) |
+| `PLACEHOLDER_HUBSPOT_CRED` | Criar Contato HubSpot | ID da credencial HubSpot no n8n |
+
+---
+
+## Configuração
+
+### 1. Importar o workflow no n8n
+1. Acesse seu n8n → **Workflows** → **Import from file**
+2. Selecione `Fluxo_Onboarding_v3.json`
+3. Configure todas as credenciais nos nós marcados em vermelho
+
+### 2. Preencher os placeholders
+No nó **"Parsear Dados do Convenia"**, substitua os `PLACEHOLDER_DRIVE_*` pelos IDs reais das pastas de Drive de cada departamento.
+
+### 3. Configurar o modelo de boas-vindas
+O arquivo Google Docs modelo deve conter os seguintes placeholders com essa formatação exata:
+
+| Placeholder | Substituído por |
+|---|---|
+| `{{NOME}}` | Primeiro nome do colaborador |
+| `{{EMAIL}}` | E-mail corporativo completo |
+| `{{SENHA}}` | Senha temporária gerada pelo fluxo |
+
+IDs já configurados no fluxo:
+- **Modelo:** `1lCtvWeVdhY-ilX5JMDKv7FM70XcnazaU40UX_gP24zA`
+- **Pasta destino:** `1sEgVnqikEax4I2sLPGYEOYr0nC9vy8KZ`
+
+### 4. Adicionar novos departamentos
+Para mapear novos departamentos a grupos ou pastas, edite os objetos `mapaGrupos` e `mapaDrives` no nó **"Parsear Dados do Convenia"**.
+
+### 5. Adicionar novos gestores
+Para adicionar gestores ao mapa de resolução, edite o objeto `mapaGestores` no mesmo nó, adicionando o nome como aparece no Convenia (maiúsculo) e o e-mail corporativo correspondente.
+
+---
+
+## Como Usar
+
+O fluxo é totalmente automático. Não é necessária nenhuma ação manual além de manter o fluxo ativo.
+
+Quando o Convenia enviar um e-mail com assunto **"CRIAÇÃO DE ACESSOS"** para o Gmail vinculado, o fluxo executa automaticamente e ao final envia uma mensagem no Slack confirmando tudo que foi feito:
+```
+✅ Onboarding concluído!
+
+Nome: ---------
+E-mail: -------------
+Departamento: Comercial
+Gestor: ------------
+Grupos: ---------------
+Card de boas-vindas: criado 📄
+```
+
+---
+
+## Observações
+
+- O campo `manager` no Google Admin é preenchido automaticamente durante o onboarding com base no campo GESTOR do e-mail do Convenia. Isso garante que o fluxo de **offboarding** sempre encontre o gestor correto sem depender de input manual.
+- Se o Convenia enviar um nome de gestor fora do mapa de resolução, o fluxo não quebra — usa o valor bruto e informa na mensagem do Slack para que o mapa seja atualizado.
+- A senha temporária gerada segue o padrão `Rb` + 8 caracteres alfanuméricos + `!9`, atendendo requisitos de complexidade do Google Workspace.
+- O fluxo **não** usa `changePasswordAtNextLogin` — a senha está no card de boas-vindas e a pessoa acessa normalmente na primeira vez.
+- Todos os dados sensíveis (IDs de pastas, credenciais) devem ser preenchidos diretamente no fluxo ou via n8n Variables — nunca hardcoded em produção.
